@@ -1,3 +1,5 @@
+package first.classifiers;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -5,7 +7,7 @@ import java.util.List;
 /**
  * @author Irene Petrova
  */
-public class KNN implements Classifier<Double, Integer>{
+public class KNN implements Classifier<Double, Integer> {
     private final List<Item<Double, Integer>> trainingData;
     private final int k;
 

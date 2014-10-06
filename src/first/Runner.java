@@ -1,3 +1,7 @@
+package first;
+
+import first.rules.ArffReader;
+
 import java.io.FileNotFoundException;
 
 /**

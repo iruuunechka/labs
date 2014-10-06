@@ -1,3 +1,8 @@
+package first.classifiers;
+
+import first.classifiers.Classifier;
+import first.classifiers.Item;
+
 import java.util.List;
 
 /**
