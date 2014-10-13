@@ -29,10 +29,7 @@ public class Dataset {
     }
 
     public boolean isSameLabel() {
-        if (labelSet.size() == 1) {
-            return true;
-        }
-        return false;
+        return labelSet.size() == 1;
     }
 
     public int getFeatureCount() {
@@ -80,14 +77,14 @@ public class Dataset {
         sortByFeature(feature);
         int i;
         for (i = dataset.size() / 2; i < dataset.size(); ++i) {
-            if (dataset.get(i).features.get(feature) != dataset.get(dataset.size() / 2).features.get(feature)) {
+            if (!dataset.get(i).features.get(feature).equals(dataset.get(dataset.size() / 2).features.get(feature))) {
                 break;
             }
         }
         i = i - dataset.size() / 2;
         int j;
         for (j = dataset.size() / 2 - 1; j >= 0; --j) {
-            if (dataset.get(j).features.get(feature) != dataset.get(dataset.size() / 2).features.get(feature)) {
+            if (!dataset.get(j).features.get(feature).equals(dataset.get(dataset.size() / 2).features.get(feature))) {
                 break;
             }
         }
