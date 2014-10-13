@@ -6,7 +6,7 @@ import java.util.*;
  * @author Irene Petrova
  */
 public class Dataset {
-    private static final Random rand = new Random();
+    private static final Random rand = new Random(115753515785218l);
     public final Set<Integer> labelSet;
     public final List<Data> dataset;
 

@@ -9,16 +9,17 @@ import java.util.Map;
  * @author Irene Petrova
  */
 public class Forest {
-    private static final int treeCount = 9;
+    private final int treeCount;
     private final int maxDepth;
     private final List<Tree> forest;
     private final int percent;
 
-    public Forest(Dataset train, int maxDepth, int percent) {
+    public Forest(Dataset train, int treeCount, int maxDepth, int percent) {
+        this.treeCount = treeCount;
         this.maxDepth = maxDepth;
         this.percent = percent;
         forest = new ArrayList<>();
-        for (int i = 0; i < treeCount; ++i) {
+        for (int i = 0; i < this.treeCount; ++i) {
             forest.add(new Tree(train.getRandomDataSet(this.percent), maxDepth));
         }
     }
