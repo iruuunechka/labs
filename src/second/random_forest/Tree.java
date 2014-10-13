@@ -25,7 +25,7 @@ public class Tree {
     public int classify(Data test) {
         Node cur = root;
         while (cur.canBeSplited) {
-            if (test.features.get(cur.splitFeature) >= cur.splitVal) {
+            if (test.features.get(cur.splitFeature) > cur.splitVal) {
                 cur = cur.right;
             } else {
                 cur = cur.left;

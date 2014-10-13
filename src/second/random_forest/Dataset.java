@@ -6,7 +6,7 @@ import java.util.*;
  * @author Irene Petrova
  */
 public class Dataset {
-    private static final Random rand = new Random(115753515785218l);
+    private static final Random rand = new Random();
     public final Set<Integer> labelSet;
     public final List<Data> dataset;
 
@@ -40,8 +40,8 @@ public class Dataset {
        return dataset.size();
     }
 
-    public int getSplitVal(int splitIndex, int feature) {
-        return dataset.get(splitIndex).features.get(feature);
+    public double getSplitVal(int splitIndex, int feature) {
+        return 0.5 * (dataset.get(splitIndex).features.get(feature) + dataset.get(splitIndex - 1).features.get(feature));
     }
 
     public int countLabel(int label) {

@@ -30,12 +30,14 @@ public class Forest {
             if (classify(test) == test.label) {
                 cou++;
             }
+//            System.out.println(cou);
         }
         return 100.0 * cou / testData.size();
     }
 
     private int classify (Data test) {
         Map<Integer, Integer> labelCount = new HashMap<>();
+//        System.out.print(test.features.get(0) + "   ");
         for (Tree t : forest) {
             int l = t.classify(test);
             if (labelCount.containsKey(l)) {
