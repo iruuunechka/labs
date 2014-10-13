@@ -79,21 +79,21 @@ public class Dataset {
     public int getSplitIndex(int feature){
         sortByFeature(feature);
         int i;
-        for (i = dataset.size() / 2 + 1; i < dataset.size(); ++i) {
-            if (dataset.get(i) != dataset.get(dataset.size() / 2)) {
+        for (i = dataset.size() / 2; i < dataset.size(); ++i) {
+            if (dataset.get(i).features.get(feature) != dataset.get(dataset.size() / 2).features.get(feature)) {
                 break;
             }
         }
-        i = i - dataset.size() / 2 - 1;
+        i = i - dataset.size() / 2;
         int j;
         for (j = dataset.size() / 2 - 1; j >= 0; --j) {
-            if (dataset.get(j) != dataset.get(dataset.size() / 2)) {
+            if (dataset.get(j).features.get(feature) != dataset.get(dataset.size() / 2).features.get(feature)) {
                 break;
             }
         }
         j = dataset.size() / 2 - 1 - j ;
-        if (i < j) {
-            return dataset.size() / 2 + i + 1;
+        if (i <= j) {
+            return dataset.size() / 2 + i;
         } else {
             return dataset.size() / 2 - j;
         }
