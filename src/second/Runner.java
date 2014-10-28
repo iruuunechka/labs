@@ -7,7 +7,7 @@ import java.io.IOException;
  * @author Irene Petrova
  */
 public class Runner {
-    public static final int percent = 60;
+    public static final int percent = 70;
     public static void main(String[] args) throws IOException {
         Reader bayesReader = new Reader(new File("pu1"));
         Bayes bayesClassifier = new Bayes(bayesReader.getTrainingSet(percent));

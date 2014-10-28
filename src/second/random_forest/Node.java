@@ -1,5 +1,9 @@
 package second.random_forest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author Irene Petrova
  */
@@ -12,6 +16,7 @@ public class Node {
     public double splitVal;
     public boolean canBeSplited;
     private final int depth;
+    private final Random rand;
 
     public Node(Dataset dataset, int depth) {
         this.dataset = dataset;
@@ -19,7 +24,7 @@ public class Node {
         this.left = null;
         this.right = null;
         canBeSplited = (!dataset.isSameLabel() && maxDepth > depth);
-
+        rand = Dataset.rand;
     }
 
     private double gini(Dataset left, Dataset right) {
@@ -45,12 +50,22 @@ public class Node {
         }
     }
 
+    private List<Integer> getRandomFeatures() {
+        int featureCou = (int) Math.sqrt(dataset.getFeatureCount());
+        List<Integer> features = new ArrayList<>(featureCou);
+        for (int i = 0; i < featureCou; ++i) {
+            features.add(rand.nextInt(dataset.getFeatureCount()));
+        }
+        return features;
+    }
+
     private void split() {
         if (!canBeSplited) {
             return;
         }
         double bestGini = Double.NEGATIVE_INFINITY;
-        for (int feature = 0; feature < dataset.getFeatureCount(); ++feature) {
+        List<Integer> features = getRandomFeatures();
+        for (int feature : features) {
             if (!dataset.canSplitByFeature(feature)) {
                 continue;
             }
@@ -70,6 +85,5 @@ public class Node {
         left = new Node(splitLeft, depth + 1);
         right = new Node(splitRight, depth + 1);
     }
-
 }
 

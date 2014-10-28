@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Runner {
     private static final int maxDepth = 10;
     public static final int percent = 100;
-    public static final int treeCount = 23;
+    public static final int treeCount = 9;
 
     public static void main(String[] args) throws IOException {
         Dataset train = Reader.readDataset(new File("random_forest/arcene_train.data"), new File("random_forest/arcene_train.labels"));
