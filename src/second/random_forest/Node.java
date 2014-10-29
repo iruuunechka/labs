@@ -65,6 +65,7 @@ public class Node {
         }
         double bestGini = Double.NEGATIVE_INFINITY;
         List<Integer> features = getRandomFeatures();
+        canBeSplited = false;
         for (int feature : features) {
             if (!dataset.canSplitByFeature(feature)) {
                 continue;
@@ -78,6 +79,10 @@ public class Node {
                 splitFeature = feature;
                 splitVal = dataset.getSplitVal(splitIndex, feature);
             }
+            canBeSplited = true;
+        }
+        if (!canBeSplited) {
+            return;
         }
         int splitIndex = dataset.getSplitIndex(splitFeature);
         Dataset splitLeft = dataset.getLeft(splitIndex);
