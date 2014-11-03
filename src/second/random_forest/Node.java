@@ -1,8 +1,6 @@
 package second.random_forest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Irene Petrova
@@ -52,11 +50,11 @@ public class Node {
 
     private List<Integer> getRandomFeatures() {
         int featureCou = (int) Math.sqrt(dataset.getFeatureCount());
-        List<Integer> features = new ArrayList<>(featureCou);
+        Set<Integer> features = new HashSet<>(featureCou);
         for (int i = 0; i < featureCou; ++i) {
-            features.add(rand.nextInt(dataset.getFeatureCount()));
+            while (!features.add(rand.nextInt(dataset.getFeatureCount())));
         }
-        return features;
+        return new ArrayList<>(features);
     }
 
     private void split() {

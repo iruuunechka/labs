@@ -1,4 +1,4 @@
-package second;
+package second.bayes;
 
 import java.util.Map;
 import java.util.Set;

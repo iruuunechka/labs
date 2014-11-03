@@ -23,7 +23,7 @@ public class TestFilter {
         Filter filter = new Filter(train);
         PrintWriter trainPW = new PrintWriter("train.txt");
         PrintWriter testPW = new PrintWriter("test.txt");
-        for (int featureCou = 50; featureCou > 0; featureCou -= 1) {
+        for (int featureCou = 500; featureCou > 0; featureCou -= 5) {
             List<Integer> sortedFeatures = filter.getFeatures(featureCou);
             Dataset curTrain = Filter.generateDatasetWithFeatures(train, sortedFeatures);
             Dataset curTest = Filter.generateDatasetWithFeatures(test, sortedFeatures);
