@@ -8,6 +8,9 @@ import java.io.IOException;
  */
 public class BayesianRunner {
     public static void main(String[] args) throws IOException {
-        BayesianReader.read(new File("bayesian_network"));
+        BayesianNetwork bn = new BayesianNetwork(BayesianReader.read(new File("bayesian_network")));
+        bn.countAposteriori(0, true, 3);
+
     }
+
 }

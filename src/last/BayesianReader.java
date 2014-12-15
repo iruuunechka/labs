@@ -10,69 +10,8 @@ import java.util.*;
  * @author Irene Petrova
  */
 public class BayesianReader {
-    private static class Node {
-        private Factor factor;
-        private int[] child;
 
-        public Node(Factor factor, int[] child) {
-            this.factor = factor;
-            this.child = child;
-        }
-
-        public void setChild(int[] child) {
-            this.child = child;
-        }
-
-    }
-    private static class Factor {
-        public Factor(Map<Integer, Double> prob, int parents) {
-            this.prob = prob;
-            this.parents = parents;
-        }
-
-        private Map<Integer, Double> prob;
-
-
-        private int parents;
-
-        private void sumByMask(int mask) {
-            for (int k : prob.keySet()) {
-                int newKey = k & mask;
-                prob.put(newKey, prob.getOrDefault(newKey, 0.0) + prob.get(k));
-            }
-        }
-
-        public void sumByVert(int x, int vertCount) {
-            int mask = 1 << vertCount - 1;
-            mask = mask & ~(1 << x);
-        }
-
-        private boolean getBit(int x, int i) {
-            return (x | (1 << i)) == x;
-        }
-
-        private boolean hasMask(int x, int mask) {
-            return (x | mask) == x;
-        }
-
-        private Factor multiply(Factor factor) {
-            int newParents = parents | factor.parents;
-            int intersection = parents & factor.parents;
-            Map<Integer, Double> newProb = new HashMap<>();
-            for (int parVal1 : prob.keySet()) {
-                int mask = intersection & parVal1;
-                for (int parval2 : factor.prob.keySet()) {
-                    if (hasMask(parval2, mask)) {
-                        newProb.put(parVal1 + (parval2 & ~mask),
-                                        prob.get(parVal1) * factor.prob.get(parval2));
-                    }
-                }
-            }
-            return new Factor(newProb, newParents);
-        }
-    }
-
-    public static void read(File file) throws IOException {
+    public static Node[] read(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String[] names = br.readLine().split(" ");
         int vertCount = names.length;
@@ -81,8 +20,10 @@ public class BayesianReader {
         while (!(s = br.readLine()).isEmpty()) {
             String[] vertProb = s.split(" : ");
             Map<Integer, Double> prob = new HashMap<>();
-            prob.put(0, Double.parseDouble(vertProb[1]));
-            graph[Integer.parseInt(vertProb[0])] = new Node(new Factor(prob, 0), null);
+            prob.put(0, 1 - Double.parseDouble(vertProb[1]));
+            int vert = Integer.parseInt(vertProb[0]);
+            prob.put(1 << vert, Double.parseDouble(vertProb[1]));
+            graph[vert] = new Node(new Factor(prob, 1 << vert), null, vert);
         }
         while (!((s = br.readLine()) == null)) {
             String[] vertChild =  s.split(":");
@@ -116,11 +57,14 @@ public class BayesianReader {
                         parentsCond += 1 << Integer.parseInt(parent[i]);
                     }
                 }
+                prob.put(parentsCond, 1 - Double.parseDouble(parentProb[1]));
+                parentsCond += 1 << vert;
                 prob.put(parentsCond, Double.parseDouble(parentProb[1]));
                 s = br.readLine();
             }
-            graph[vert] = new Node(new Factor(prob, parents), child);
+            graph[vert] = new Node(new Factor(prob, parents), child, vert);
         }
         System.out.println(graph.length);
+        return graph;
     }
 }
