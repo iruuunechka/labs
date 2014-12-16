@@ -31,16 +31,19 @@ public class Factor {
         }
     }
 
-    private void sumByMask(int mask) {
+    private Map<Integer, Double> sumByMask(int mask) {
+        Map<Integer, Double> newProb = new HashMap<>();
         for (int k : prob.keySet()) {
             int newKey = k & mask;
-            prob.put(newKey, prob.getOrDefault(newKey, 0.0) + prob.get(k));
+            newProb.put(newKey, newProb.getOrDefault(newKey, 0.0) + prob.get(k));
         }
+        return newProb;
     }
 
-    public void sumByVert(int x, int vertCount) {
-        int mask = 1 << vertCount - 1;
+    public Factor sumByVert(int x, int vertCount) {
+        int mask = (1 << vertCount) - 1;
         mask = mask & ~(1 << x);
+        return new Factor(sumByMask(mask), parents & mask);
     }
 
     public boolean isParent(int p) {
@@ -53,6 +56,16 @@ public class Factor {
 
     private boolean hasMask(int x, int mask) {
         return (x | mask) == x;
+    }
+
+    public void normalize() {
+        double sum = 0;
+        for (double p : prob.values()) {
+            sum += p;
+        }
+        for (int key : prob.keySet()) {
+            prob.put(key, prob.get(key) / sum);
+        }
     }
 
     public Factor multiply(Factor factor) {
@@ -69,5 +82,16 @@ public class Factor {
             }
         }
         return new Factor(newProb, newParents);
+    }
+
+    public void print(int num, String name, int reasonNum, String reason) {
+        System.out.println("Probability of " + num + " ("+ name + ") in case of " + reasonNum + " ("+ reason + ")");
+        for (Map.Entry<Integer, Double> e : prob.entrySet()) {
+            if (getBit(e.getKey(), num)) {
+                System.out.println(String.format("false | %.4f", e.getValue()));
+            } else {
+                System.out.println(String.format("true  | %.4f", e.getValue()));
+            }
+        }
     }
 }

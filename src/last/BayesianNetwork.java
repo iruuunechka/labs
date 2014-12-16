@@ -8,9 +8,12 @@ import java.util.*;
 public class BayesianNetwork {
     private Node[] graph;
     private final int vertCou;
-    public BayesianNetwork(Node[] graph) {
-        this.graph = graph;
-        this.vertCou = graph.length;
+    private final Map<Integer, String> names;
+
+    public BayesianNetwork(Node[] nodes, Map<Integer, String> names) {
+        this.names = names;
+        this.graph = nodes;
+        this.vertCou = nodes.length;
     }
 
     private Factor[] copyFactor() {
@@ -48,13 +51,16 @@ public class BayesianNetwork {
 
         Factor[] factors = copyFactor();
         for (Factor f : factors) {
-            f.filter(x, s);
+            if (f.isParent(x)) {
+                f.filter(x, s);
+            }
         }
         Factor curFactor = null;
         boolean[] usedFactor = new boolean[vertCou]; //true if already multiplied
         Arrays.fill(usedFactor, false);
         for (VarWithRef vr : sortedVarsWithRef) {
             Factor product = null;
+
             for (int r : vr.refs) {
                 if (!usedFactor[r]) {
                     if (product == null) {
@@ -70,10 +76,24 @@ public class BayesianNetwork {
             }
             if (curFactor == null) {
                 curFactor = product;
+                curFactor = curFactor.sumByVert(vr.var, vertCou);
                 continue;
             }
             curFactor = curFactor.multiply(product);
+            curFactor = curFactor.sumByVert(vr.var, vertCou);
         }
+        for (int i = 0; i < usedFactor.length; ++i) {
+            if (!usedFactor[i]) {
+                if (curFactor == null){
+                    curFactor = factors[i];
+                } else {
+                    curFactor.multiply(factors[i]);
+                    curFactor = curFactor.sumByVert(i, vertCou);
+                }
+            }
+        }
+        curFactor.normalize();
+        curFactor.print(v, names.get(v), x, names.get(x));
         return curFactor;
     }
 

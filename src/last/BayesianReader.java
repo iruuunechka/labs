@@ -11,9 +11,14 @@ import java.util.*;
  */
 public class BayesianReader {
 
-    public static Node[] read(File file) throws IOException {
+    public static BayesianNetwork read(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String[] names = br.readLine().split(" ");
+        Map<Integer, String> varNames = new HashMap<>();
+        for (int i = 0; i < names.length; ++i) {
+            varNames.put(i, names[i]);
+        }
+
         int vertCount = names.length;
         Node[] graph = new Node[vertCount];
         String s;
@@ -47,6 +52,7 @@ public class BayesianReader {
             for (int i = 0; i < parentsNums.length; ++i) {
                 parents += 1 << Integer.parseInt(parentsNums[i]);
             }
+            parents += 1 << vert;
             while (!s.equals("end")) {
                 String[] parentProb = s.split(" : ");
                 String[] parent = parentProb[0].split(" ");
@@ -65,6 +71,6 @@ public class BayesianReader {
             graph[vert] = new Node(new Factor(prob, parents), child, vert);
         }
         System.out.println(graph.length);
-        return graph;
+        return new BayesianNetwork(graph, varNames);
     }
 }
