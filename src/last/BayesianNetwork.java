@@ -14,6 +14,33 @@ public class BayesianNetwork {
         this.names = names;
         this.graph = nodes;
         this.vertCou = nodes.length;
+        checkCorrect();
+    }
+
+    private void dfs(int u, int[] color) {
+        color[u] = 1;
+        if (graph[u].child != null) {
+            for (int v : graph[u].child) {
+                if (color[v] == 0) {
+                    dfs(v, color);
+                }
+                if (color[v] == 1) {
+                    throw new RuntimeException("Bayesian network has cycle");
+                }
+            }
+        }
+        color[u] = 3;
+    }
+
+    private void checkCorrect() {
+        int[] color = new int[graph.length];
+        Arrays.fill(color, 0);
+        dfs(0, color);
+        for (int col : color) {
+            if (col == 0) {
+                throw new RuntimeException("Bayesian network is not connected");
+            }
+        }
     }
 
     private Factor[] copyFactor() {
@@ -65,9 +92,10 @@ public class BayesianNetwork {
         Factor curFactor = null;
         boolean[] usedFactor = new boolean[vertCou]; //true if already multiplied
         Arrays.fill(usedFactor, false);
-        for (VarWithRef vr : sortedVarsWithRef) {
+        while (!sortedVarsWithRef.isEmpty()) {
+            VarWithRef vr = sortedVarsWithRef.get(0);
             Factor product = null;
-
+            List<Integer> curMultiplied = new ArrayList<>(); //перемноженные на текущем шаге
             for (int r : vr.refs) {
                 if (!usedFactor[r]) {
                     if (product == null) {
@@ -76,21 +104,27 @@ public class BayesianNetwork {
                         product = product.multiply(factors[r]);
                     }
                     usedFactor[r] = true;
+                    curMultiplied.add(r);
                 }
             }
             if (product == null) {
                 if (curFactor != null) {
                     curFactor = curFactor.sumByVert(vr.var, vertCou);
                 }
-                continue;
-            }
-            if (curFactor == null) {
+            } else if (curFactor == null) {
                 curFactor = product;
                 curFactor = curFactor.sumByVert(vr.var, vertCou);
-                continue;
+            } else {
+                curFactor = curFactor.multiply(product);
+                curFactor = curFactor.sumByVert(vr.var, vertCou);
             }
-            curFactor = curFactor.multiply(product);
-            curFactor = curFactor.sumByVert(vr.var, vertCou);
+            sortedVarsWithRef.remove(vr);
+            for (VarWithRef vwr : sortedVarsWithRef) {
+                for (Integer toRemove : curMultiplied) {
+                    vwr.refs.remove(toRemove);
+                }
+            }
+            Collections.sort(sortedVarsWithRef);
         }
         for (int i = 0; i < usedFactor.length; ++i) {
             if (!usedFactor[i]) {
