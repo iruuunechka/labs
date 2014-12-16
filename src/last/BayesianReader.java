@@ -70,7 +70,6 @@ public class BayesianReader {
             }
             graph[vert] = new Node(new Factor(prob, parents), child, vert);
         }
-        System.out.println(graph.length);
         return new BayesianNetwork(graph, varNames);
     }
 }

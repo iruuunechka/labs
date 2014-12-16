@@ -30,7 +30,7 @@ public class BayesianNetwork {
      * @param s condition value
      * @param v vertice we count for
      */
-    public Factor countAposteriori(int x, boolean s, int v) {
+    public Factor countAposteriori(int[] x, boolean[] s, int v) {
         List<VarWithRef> sortedVarsWithRef = new ArrayList<>(); // в скольких факторах встречается каждая вершина
         for (int i = 0; i < vertCou; ++i) {
             sortedVarsWithRef.add(new VarWithRef(i));
@@ -44,15 +44,22 @@ public class BayesianNetwork {
         Iterator<VarWithRef> it = sortedVarsWithRef.iterator();
         while (it.hasNext()) {
             VarWithRef vwr = it.next();
-            if (vwr.var == x  || vwr.var == v) {
-               it.remove();
+            if (vwr.var == v) {
+                it.remove();
+            }
+            for (int xVal : x) {
+                if (vwr.var == xVal) {
+                    it.remove();
+                }
             }
         }
 
         Factor[] factors = copyFactor();
         for (Factor f : factors) {
-            if (f.isParent(x)) {
-                f.filter(x, s);
+            for (int i = 0; i < x.length; ++i) {
+                if (f.isParent(x[i])) {
+                    f.filter(x[i], s[i]);
+                }
             }
         }
         Factor curFactor = null;
@@ -72,6 +79,9 @@ public class BayesianNetwork {
                 }
             }
             if (product == null) {
+                if (curFactor != null) {
+                    curFactor = curFactor.sumByVert(vr.var, vertCou);
+                }
                 continue;
             }
             if (curFactor == null) {
@@ -87,13 +97,15 @@ public class BayesianNetwork {
                 if (curFactor == null){
                     curFactor = factors[i];
                 } else {
-                    curFactor.multiply(factors[i]);
-                    curFactor = curFactor.sumByVert(i, vertCou);
+                    curFactor = curFactor.multiply(factors[i]);
+                    if (i != v) {
+                        curFactor = curFactor.sumByVert(i, vertCou);
+                    }
                 }
             }
         }
         curFactor.normalize();
-        curFactor.print(v, names.get(v), x, names.get(x));
+        curFactor.print(v, x, s, names);
         return curFactor;
     }
 

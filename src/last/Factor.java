@@ -84,13 +84,21 @@ public class Factor {
         return new Factor(newProb, newParents);
     }
 
-    public void print(int num, String name, int reasonNum, String reason) {
-        System.out.println("Probability of " + num + " ("+ name + ") in case of " + reasonNum + " ("+ reason + ")");
+    public void print(int num, int[] reasons, boolean[] reasonsVal, Map<Integer, String> names) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Probability of " + num + " ("+ names.get(num) + ") in case of ");
+        for (int i = 0; i < reasons.length; i++) {
+            if (!reasonsVal[i]) {
+                sb.append("no ");
+            }
+            sb.append(reasons[i] + " ("+ names.get(reasons[i]) + ") ");
+        }
+        System.out.println(sb);
         for (Map.Entry<Integer, Double> e : prob.entrySet()) {
             if (getBit(e.getKey(), num)) {
-                System.out.println(String.format("false | %.4f", e.getValue()));
+                System.out.println(String.format("true | %.4f", e.getValue()));
             } else {
-                System.out.println(String.format("true  | %.4f", e.getValue()));
+                System.out.println(String.format("false  | %.4f", e.getValue()));
             }
         }
     }

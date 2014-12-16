@@ -9,7 +9,9 @@ import java.io.IOException;
 public class BayesianRunner {
     public static void main(String[] args) throws IOException {
         BayesianNetwork bn = BayesianReader.read(new File("bayesian_network"));
-        bn.countAposteriori(2, true, 5);
+        int[] conditions = {0, 3};
+        boolean[] conditionVals = {false, true};
+        bn.countAposteriori(conditions, conditionVals, 5);
 
     }
 
