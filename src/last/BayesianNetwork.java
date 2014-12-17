@@ -7,6 +7,11 @@ import java.util.*;
  */
 public class BayesianNetwork {
     private Node[] graph;
+
+    public int getVertCou() {
+        return vertCou;
+    }
+
     private final int vertCou;
     private final Map<Integer, String> names;
 
@@ -17,12 +22,12 @@ public class BayesianNetwork {
         checkCorrect();
     }
 
-    private void dfs(int u, int[] color) {
+    private void dfsAcyclic(int u, int[] color) {
         color[u] = 1;
         if (graph[u].child != null) {
             for (int v : graph[u].child) {
                 if (color[v] == 0) {
-                    dfs(v, color);
+                    dfsAcyclic(v, color);
                 }
                 if (color[v] == 1) {
                     throw new RuntimeException("Bayesian network has cycle");
@@ -32,10 +37,36 @@ public class BayesianNetwork {
         color[u] = 3;
     }
 
+    private void dfsConnected(int u, int[] color, List<Set<Integer>> graph) {
+        color[u] = 1;
+        if (graph.get(u) != null) {
+            for (int v : graph.get(u)) {
+                if (color[v] == 0) {
+                    dfsConnected(v, color, graph);
+                }
+            }
+        }
+        color[u] = 3;
+    }
+
     private void checkCorrect() {
         int[] color = new int[graph.length];
         Arrays.fill(color, 0);
-        dfs(0, color);
+        dfsAcyclic(0, color);
+
+        List<Set<Integer>> unDirectedGraph = new ArrayList<>();
+        for (Node n : graph) {
+            Set<Integer> neigh = new HashSet<>();
+            neigh.addAll(n.child);
+            unDirectedGraph.add(neigh);
+        }
+        for (int i = 0; i < graph.length; ++i) {
+            for (int child : graph[i].child) {
+                unDirectedGraph.get(child).add(i);
+            }
+        }
+        Arrays.fill(color, 0);
+        dfsConnected(0, color, unDirectedGraph);
         for (int col : color) {
             if (col == 0) {
                 throw new RuntimeException("Bayesian network is not connected");
@@ -75,7 +106,7 @@ public class BayesianNetwork {
                 it.remove();
             }
             for (int xVal : x) {
-                if (vwr.var == xVal) {
+                if (xVal != v && vwr.var == xVal) {
                     it.remove();
                 }
             }

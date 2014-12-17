@@ -33,12 +33,11 @@ public class BayesianReader {
         while (!((s = br.readLine()) == null)) {
             String[] vertChild =  s.split(":");
             int vert = Integer.parseInt(vertChild[0].trim());
-            int[] child = null;
+            List<Integer> child = new ArrayList<>();
             if (!(vertChild.length <= 1 || vertChild[1].trim().isEmpty())) {
                 String[] childs = vertChild[1].trim().split(" ");
-                child = new int[childs.length];
                 for (int i = 0; i < childs.length; ++i) {
-                    child[i] = Integer.parseInt(childs[i]);
+                    child.add(Integer.parseInt(childs[i]));
                 }
             }
             s = br.readLine();

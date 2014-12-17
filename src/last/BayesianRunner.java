@@ -11,7 +11,9 @@ public class BayesianRunner {
         BayesianNetwork bn = BayesianReader.read(new File("bayesian_network"));
         int[] conditions = {0, 3};
         boolean[] conditionVals = {true, true};
-        bn.countAposteriori(conditions, conditionVals, 5);
+        for (int i = 0; i < bn.getVertCou(); ++i) {
+            bn.countAposteriori(conditions, conditionVals, i);
+        }
 
     }
 

@@ -1,20 +1,22 @@
 package last;
 
+import java.util.List;
+
 /**
  * @author Irene Petrova
  */
 public class Node {
     public Factor factor;
-    public int[] child;
+    public List<Integer> child;
     public int val;
 
-    public Node(Factor factor, int[] child, int val) {
+    public Node(Factor factor, List<Integer> child, int val) {
         this.factor = factor;
         this.child = child;
         this.val = val;
     }
 
-    public void setChild(int[] child) {
+    public void setChild(List<Integer> child) {
         this.child = child;
     }
 
