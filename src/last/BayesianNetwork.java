@@ -68,6 +68,11 @@ public class BayesianNetwork {
         int[] color = new int[graph.length];
         Arrays.fill(color, 0);
         dfsAcyclic(0, color);
+        for (int i = 0; i < color.length; ++i) {
+            if (color[i] == 0) {
+                dfsAcyclic(i, color);
+            }
+        }
 
         List<Set<Integer>> unDirectedGraph = new ArrayList<>();
         for (Node n : graph) {
