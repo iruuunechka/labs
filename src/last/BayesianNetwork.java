@@ -1,5 +1,8 @@
 package last;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -20,6 +23,18 @@ public class BayesianNetwork {
         this.graph = nodes;
         this.vertCou = nodes.length;
         checkCorrect();
+    }
+
+    public void drawNet(File file) throws FileNotFoundException {
+        PrintWriter pw = new PrintWriter(file);
+        pw.println("digraph Net {");
+        for (int u = 0; u < graph.length; ++u) {
+            for (int v : graph[u].child) {
+                pw.println(u + " -> " + v);
+            }
+        }
+        pw.println("}");
+        pw.close();
     }
 
     private void dfsAcyclic(int u, int[] color) {
